@@ -1,6 +1,6 @@
 import React from 'react';
 import './MemeCard.css'
-import {Button, Card, Elevation,Text} from "@blueprintjs/core";
+import {Card, Elevation,Text} from "@blueprintjs/core";
 
 function MemesCard({meme}) {
     return (
@@ -12,7 +12,7 @@ function MemesCard({meme}) {
             <Text tagName="p" ellipsize={true}>
                 {meme.author}
             </Text>
-            <img src={meme.imageUrl} />
+            <img src={meme.imageUrl} alt={meme.imageUrl}/>
         </Card>);
 }
 

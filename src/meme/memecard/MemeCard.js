@@ -15,7 +15,25 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import Typography from "@material-ui/core/Typography";
+import gql from 'graphql-tag';
+import {useMutation} from '@apollo/react-hooks';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
+const UP_VOTE_MEME = gql`
+  mutation upVoteMeme($input: UpVoteMemeInputType!) {
+      upVoteMeme(input: $input) {
+        id
+      }
+  }
+`;
+
+const DOWN_VOTE_MEME = gql`
+  mutation downVoteMeme($input: DownVoteMemeInputType!) {
+      downVoteMeme(input: $input) {
+        id
+      }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -38,10 +56,32 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function MemesCard({meme}) {
+function MemesCard(props) {
     const classes = useStyles();
 
+    const [upVoteMeme, {loading: upVoting}] = useMutation(UP_VOTE_MEME, {
+        onCompleted: data => {
+            if (data.upVoteMeme.id === meme.id) {
+                updateMeme({
+                    ...meme,
+                    upVotes: meme.upVotes + 1
+                })
+            }
+        }
+    });
+    const [downVoteMeme, {loading: downVoting}] = useMutation(DOWN_VOTE_MEME, {
+        onCompleted: data => {
+            if (data.downVoteMeme.id === meme.id) {
+                updateMeme({
+                    ...meme,
+                    downVotes: meme.downVotes + 1
+                })
+            }
+        }
+    });
+
     const [isExpanded, expand] = useState(false);
+    const [meme, updateMeme] = useState(props.meme);
 
     return (
         <Card className={classes.root}>
@@ -67,12 +107,14 @@ function MemesCard({meme}) {
             <CardContent>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="up vote meme">
-                    {meme.upVotes}
+                <IconButton aria-label="up vote meme"
+                            onClick={e => upVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                    {upVoting ? <CircularProgress/> : meme.upVotes}
                     <ArrowUpwardRoundedIcon/>
                 </IconButton>
-                <IconButton aria-label="down vote meme">
-                    {meme.downVotes}
+                <IconButton aria-label="down vote meme"
+                            onClick={e => downVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                    {downVoting ? <CircularProgress/> : meme.downVotes}
                     <ArrowDownwardRoundedIcon/>
                 </IconButton>
                 <IconButton
@@ -89,7 +131,8 @@ function MemesCard({meme}) {
                     </Typography>
                 </CardContent>
             </Collapse>
-        </Card>);
+        </Card>
+    );
 }
 
 export default MemesCard;

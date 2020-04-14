@@ -33,7 +33,7 @@ function MemesList() {
 
     return (
         <Grid className={classes.root} container direction="row" justify="center" alignItems="center" spacing={2}>
-            {data.memes.map(meme => <Grid item xs={6}><MemesCard meme={meme}/></Grid>)}
+            {data.memes.map(meme => <Grid item xs={12} sm={6}><MemesCard meme={meme}/></Grid>)}
         </Grid>
     );
 }

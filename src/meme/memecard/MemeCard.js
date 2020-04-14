@@ -18,11 +18,13 @@ import Typography from "@material-ui/core/Typography";
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {Lightbox} from "react-modal-image";
 
 const UP_VOTE_MEME = gql`
   mutation upVoteMeme($input: UpVoteMemeInputType!) {
       upVoteMeme(input: $input) {
         id
+        upVotes
       }
   }
 `;
@@ -31,6 +33,7 @@ const DOWN_VOTE_MEME = gql`
   mutation downVoteMeme($input: DownVoteMemeInputType!) {
       downVoteMeme(input: $input) {
         id
+        downVotes
       }
   }
 `;
@@ -59,12 +62,16 @@ const useStyles = makeStyles((theme) => ({
 function MemesCard(props) {
     const classes = useStyles();
 
+    const [meme, setMeme] = useState(props.meme);
+    const [isExpanded, setExpand] = useState(false);
+    const [isImageModalOpen, setImageModalOpen] = useState(false);
+
     const [upVoteMeme, {loading: upVoting}] = useMutation(UP_VOTE_MEME, {
         onCompleted: data => {
             if (data.upVoteMeme.id === meme.id) {
-                updateMeme({
+                setMeme({
                     ...meme,
-                    upVotes: meme.upVotes + 1
+                    upVotes: data.upVoteMeme.upVotes
                 })
             }
         }
@@ -72,66 +79,73 @@ function MemesCard(props) {
     const [downVoteMeme, {loading: downVoting}] = useMutation(DOWN_VOTE_MEME, {
         onCompleted: data => {
             if (data.downVoteMeme.id === meme.id) {
-                updateMeme({
+                setMeme({
                     ...meme,
-                    downVotes: meme.downVotes + 1
+                    downVotes: data.downVoteMeme.downVotes
                 })
             }
         }
     });
 
-    const [isExpanded, expand] = useState(false);
-    const [meme, updateMeme] = useState(props.meme);
-
     return (
-        <Card className={classes.root}>
-            <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {meme.author[0]}
-                    </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon/>
-                    </IconButton>
-                }
-                title={meme.title}
-                subheader={meme.dateCreated}
-            />
-            <CardMedia
-                className={classes.media}
-                image={meme.imageUrl}
-                title="Paella dish"
-            />
-            <CardContent>
-            </CardContent>
-            <CardActions disableSpacing>
-                <IconButton aria-label="up vote meme"
-                            onClick={e => upVoteMeme({variables: {input: {memeId: meme.id}}})}>
-                    {upVoting ? <CircularProgress/> : meme.upVotes}
-                    <ArrowUpwardRoundedIcon/>
-                </IconButton>
-                <IconButton aria-label="down vote meme"
-                            onClick={e => downVoteMeme({variables: {input: {memeId: meme.id}}})}>
-                    {downVoting ? <CircularProgress/> : meme.downVotes}
-                    <ArrowDownwardRoundedIcon/>
-                </IconButton>
-                <IconButton
-                    onClick={e => expand(!isExpanded)}
-                    aria-label="show comments"
-                >
-                    <ChatRoundedIcon/>
-                </IconButton>
-            </CardActions>
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+        <>
+            <Card className={classes.root}>
+                <CardHeader
+                    avatar={
+                        <Avatar aria-label="recipe" className={classes.avatar}>
+                            {meme.author[0]}
+                        </Avatar>
+                    }
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon/>
+                        </IconButton>
+                    }
+                    title={meme.title}
+                    subheader={meme.dateCreated}
+                />
+                <CardMedia
+                    className={classes.media}
+                    image={meme.imageUrl}
+                    title="Paella dish"
+                    onClick={e => setImageModalOpen(true)}
+                />
                 <CardContent>
-                    <Typography variant="body1">
-                        Comments are still under implementation, sorry for the inconvenience.
-                    </Typography>
                 </CardContent>
-            </Collapse>
-        </Card>
+                <CardActions disableSpacing>
+                    <IconButton aria-label="up vote meme"
+                                onClick={e => upVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                        {upVoting ? <CircularProgress/> : meme.upVotes}
+                        <ArrowUpwardRoundedIcon/>
+                    </IconButton>
+                    <IconButton aria-label="down vote meme"
+                                onClick={e => downVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                        {downVoting ? <CircularProgress/> : meme.downVotes}
+                        <ArrowDownwardRoundedIcon/>
+                    </IconButton>
+                    <IconButton
+                        onClick={e => setExpand(!isExpanded)}
+                        aria-label="show comments"
+                    >
+                        <ChatRoundedIcon/>
+                    </IconButton>
+                </CardActions>
+                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                        <Typography variant="body1">
+                            Comments are still under implementation, sorry for the inconvenience.
+                        </Typography>
+                    </CardContent>
+                </Collapse>
+            </Card>
+            {isImageModalOpen && <Lightbox
+                medium={meme.imageUrl}
+                showRotate={false}
+                hideZoom={true}
+                alt={meme.title}
+                onClose={() => setImageModalOpen(false)}
+            />}
+        </>
     );
 }
 

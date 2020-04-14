@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MemesList() {
     const classes = useStyles();
+
     const {loading, error, data} = useQuery(GET_MEMES);
 
     if (loading) return 'Loading...';

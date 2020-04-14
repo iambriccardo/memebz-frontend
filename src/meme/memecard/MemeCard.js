@@ -21,7 +21,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {Lightbox} from "react-modal-image";
 
 const UP_VOTE_MEME = gql`
-  mutation upVoteMeme($input: UpVoteMemeInputType!) {
+  mutation upVoteMeme($input: VoteInput!) {
       upVoteMeme(input: $input) {
         id
         upVotes
@@ -30,7 +30,7 @@ const UP_VOTE_MEME = gql`
 `;
 
 const DOWN_VOTE_MEME = gql`
-  mutation downVoteMeme($input: DownVoteMemeInputType!) {
+  mutation downVoteMeme($input: VoteInput!) {
       downVoteMeme(input: $input) {
         id
         downVotes

@@ -15,7 +15,7 @@ const httpUrl = BUILD === "devel" ?
     "https://memebz.herokuapp.com/graphql"
 const webSocketUrl = BUILD === "devel" ?
     "ws://localhost:4000/graphql" :
-    "ws://memebz.herokuapp.com/graphql"
+    "wss://memebz.herokuapp.com/graphql"
 
 // Create an http link:
 const httpLink = new HttpLink({

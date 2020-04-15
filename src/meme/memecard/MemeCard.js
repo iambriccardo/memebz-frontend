@@ -16,27 +16,45 @@ import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import Typography from "@material-ui/core/Typography";
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/react-hooks';
+import {useMutation, useSubscription} from '@apollo/react-hooks';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {Lightbox} from "react-modal-image";
 
 const UP_VOTE_MEME = gql`
-  mutation upVoteMeme($input: VoteInput!) {
-      upVoteMeme(input: $input) {
-        id
-        upVotes
-      }
-  }
+    mutation upVoteMeme($input: VoteInput!) {
+        upVoteMeme(input: $input) {
+            id
+            upVotes
+        }
+    }
 `;
 
 const DOWN_VOTE_MEME = gql`
-  mutation downVoteMeme($input: VoteInput!) {
-      downVoteMeme(input: $input) {
-        id
-        downVotes
-      }
-  }
+    mutation downVoteMeme($input: VoteInput!) {
+        downVoteMeme(input: $input) {
+            id
+            downVotes
+        }
+    }
 `;
+
+const UP_VOTE_MADE = gql`
+    subscription upVoteMade($input: VoteInput!) {
+        upVoteMade(input: $input) {
+            id
+            upVotes
+        }
+    }
+`
+
+const DOWN_VOTE_MADE = gql`
+    subscription downVoteMade($input: VoteInput!) {
+        downVoteMade(input: $input) {
+            id
+            downVotes
+        }
+    }
+`
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -66,24 +84,25 @@ function MemesCard(props) {
     const [isExpanded, setExpand] = useState(false);
     const [isImageModalOpen, setImageModalOpen] = useState(false);
 
-    const [upVoteMeme, {loading: upVoting}] = useMutation(UP_VOTE_MEME, {
-        onCompleted: data => {
-            if (data.upVoteMeme.id === meme.id) {
-                setMeme({
-                    ...meme,
-                    upVotes: data.upVoteMeme.upVotes
-                })
-            }
+    const [upVoteMeme, {loading: upVoting}] = useMutation(UP_VOTE_MEME);
+    const [downVoteMeme, {loading: downVoting}] = useMutation(DOWN_VOTE_MEME);
+
+    useSubscription(UP_VOTE_MADE, {
+        variables: {input: {memeId: meme.id}},
+        onSubscriptionData: ({subscriptionData: {data: {upVoteMade}}}) => {
+            setMeme({
+                ...meme,
+                upVotes: upVoteMade.upVotes
+            })
         }
     });
-    const [downVoteMeme, {loading: downVoting}] = useMutation(DOWN_VOTE_MEME, {
-        onCompleted: data => {
-            if (data.downVoteMeme.id === meme.id) {
-                setMeme({
-                    ...meme,
-                    downVotes: data.downVoteMeme.downVotes
-                })
-            }
+    useSubscription(DOWN_VOTE_MADE, {
+        variables: {input: {memeId: meme.id}},
+        onSubscriptionData: ({subscriptionData: {data: {downVoteMade}}}) => {
+            setMeme({
+                ...meme,
+                downVotes: downVoteMade.downVotes
+            })
         }
     });
 

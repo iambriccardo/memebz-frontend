@@ -36,9 +36,7 @@ function MemesList(props) {
     if (loading) return 'Loading...';
     if (error) return `Error! ${error}`;
 
-    if (props.refetch) {
-        refetch()
-    }
+    if (props.refetch) refetch()
 
     return (
         <Grid className={classes.root} container direction="row" justify="center" alignItems="center" spacing={2}>

@@ -7,14 +7,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {useCloudinaryWidget} from "../../../hooks/cloudinary";
 import Grid from '@material-ui/core/Grid';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Typography from "@material-ui/core/Typography";
 import {useMutation} from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import DropzoneArea from "react-dropzone-material-ui";
+import {uploadPhoto} from "../../../util/cloudinary";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const ADD_MEME = gql`
     mutation addMeme($input: AddMemeInput!) {
@@ -37,20 +38,14 @@ const useStyles = makeStyles((theme) => ({
 function AddMemeDialog(props) {
     const classes = useStyles();
 
-    const [meme, setMeme] = useState({})
+    const [meme, setMeme] = useState({});
+    const [files, setFiles] = useState([]);
 
     const [addMeme, {loading: addingMeme}] = useMutation(ADD_MEME, {
         onCompleted: (data) => {
             props.onDialogClose(true)
         }
     });
-
-    const widget = useCloudinaryWidget(process.env.REACT_APP_CLOUD_NAME, process.env.REACT_APP_UPLOAD_PRESET, (info) => {
-        setMeme({
-            ...meme,
-            imageUrl: info.secure_url
-        })
-    })
 
     return (
         <Dialog open={props.isOpen} aria-labelledby="form-dialog-title">
@@ -103,15 +98,19 @@ function AddMemeDialog(props) {
                             <Typography className={classes.header} variant="body1" component="h2">
                                 Choose your meme image (pls not too many cats):
                             </Typography>
-                            <Button
+                            <DropzoneArea acceptedFiles={["image/*"]} dropzoneText={"Choose your meme file"}
+                                          filesLimit={1} onChange={setFiles}/>
+                            {files.length > 0 && <Button
                                 variant="contained"
                                 color="secondary"
                                 disabled={meme.imageUrl !== undefined}
                                 startIcon={meme.imageUrl !== undefined ? <CheckCircleIcon/> : <CloudUploadIcon/>}
-                                onClick={() => widget.open()}
+                                onClick={() => uploadPhoto(files[0], (response) => {
+                                    setMeme({...meme, imageUrl: response.secure_url})
+                                })}
                             >
                                 {meme.imageUrl !== undefined ? "Image uploaded" : "Upload meme image"}
-                            </Button>
+                            </Button>}
                         </Grid>
                     </>}
                 </Grid>
@@ -120,13 +119,12 @@ function AddMemeDialog(props) {
                 {!addingMeme &&
                 <>
                     <Button color="primary" onClick={() => props.onDialogClose(false)}>
-                    I am noob
+                        I am noob
                     </Button>
                     <Button color="primary" onClick={() => addMeme({variables: {input: meme}})}>
                         Add meme
                     </Button>
                 </>}
-
             </DialogActions>
         </Dialog>
     )

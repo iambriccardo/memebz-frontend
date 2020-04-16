@@ -22,10 +22,10 @@ const GET_MEMES = gql`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    padding: 16
-  }
+    padding: 16,
+  },
 }));
 
 function MemesList(props) {
@@ -40,11 +40,15 @@ function MemesList(props) {
 
   return (
     <Grid className={classes.root} container direction="row" justify="center" alignItems="center" spacing={2}>
-      {data.memes.map(meme => (
-        <Grid item key={meme.id} xs={12} sm={6}>
-          <MemesCard meme={meme} />
-        </Grid>
-      ))}
+      {data.memes
+        .filter(
+          (meme) => props.filter === '' || meme.title.includes(props.filter) || meme.author.includes(props.filter)
+        )
+        .map((meme) => (
+          <Grid item key={meme.id} xs={12} sm={6}>
+            <MemesCard meme={meme} />
+          </Grid>
+        ))}
     </Grid>
   );
 }

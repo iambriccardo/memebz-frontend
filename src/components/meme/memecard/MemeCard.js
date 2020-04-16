@@ -55,25 +55,25 @@ const DOWN_VOTE_MADE = gql`
   }
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   media: {
     height: 0,
-    paddingTop: '56.25%' // 16:9
+    paddingTop: '56.25%', // 16:9
   },
   expand: {
     transform: 'rotate(0deg)',
     marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest
-    })
+      duration: theme.transitions.duration.shortest,
+    }),
   },
   expandOpen: {
-    transform: 'rotate(180deg)'
+    transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: red[500]
-  }
+    backgroundColor: red[500],
+  },
 }));
 
 function MemesCard(props) {
@@ -90,50 +90,45 @@ function MemesCard(props) {
     variables: { input: { memeId: meme.id } },
     onSubscriptionData: ({
       subscriptionData: {
-        data: { upVoteMade }
-      }
+        data: { upVoteMade },
+      },
     }) => {
       setMeme({
         ...meme,
-        upVotes: upVoteMade.upVotes
+        upVotes: upVoteMade.upVotes,
       });
-    }
+    },
   });
   useSubscription(DOWN_VOTE_MADE, {
     variables: { input: { memeId: meme.id } },
     onSubscriptionData: ({
       subscriptionData: {
-        data: { downVoteMade }
-      }
+        data: { downVoteMade },
+      },
     }) => {
       setMeme({
         ...meme,
-        downVotes: downVoteMade.downVotes
+        downVotes: downVoteMade.downVotes,
       });
-    }
+    },
   });
 
   return (
     <>
       <Card className={classes.root}>
         <CardHeader
-          avatar={
-            <Avatar aria-label="recipe" className={classes.avatar}>
-              {meme.author[0]}
-            </Avatar>
-          }
+          avatar={<Avatar className={classes.avatar}>{meme.author[0]}</Avatar>}
           action={
-            <IconButton aria-label="settings">
+            <IconButton aria-label="more">
               <MoreVertIcon />
             </IconButton>
           }
-          title={meme.title + " by " + meme.author}
+          title={meme.title + ' by ' + meme.author}
           subheader={meme.dateCreated}
         />
         <CardMedia
           className={classes.media}
           image={meme.imageUrl}
-          title="Paella dish"
           onClick={() => {
             if (!isImageModalOpen) {
               setImageModalOpen(true);
@@ -156,7 +151,7 @@ function MemesCard(props) {
             {downVoting ? <CircularProgress /> : meme.downVotes}
             <ArrowDownwardRoundedIcon />
           </IconButton>
-          <IconButton onClick={e => setExpand(!isExpanded)} aria-label="show comments">
+          <IconButton onClick={() => setExpand(!isExpanded)} aria-label="show comments">
             <ChatRoundedIcon />
           </IconButton>
         </CardActions>

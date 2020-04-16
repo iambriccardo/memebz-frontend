@@ -10,33 +10,33 @@ import React, { useState } from 'react';
 import AddMemeDialog from './meme/addmemedialog/AddMemeDialog';
 import MemesList from './meme/memeslist/MemesList';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
     display: 'none',
     [theme.breakpoints.up('sm')]: {
-      display: 'block'
-    }
+      display: 'block',
+    },
   },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25)
+      backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
-      width: 'auto'
-    }
+      width: 'auto',
+    },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -45,10 +45,10 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   inputRoot: {
-    color: 'inherit'
+    color: 'inherit',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -59,16 +59,16 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       width: '12ch',
       '&:focus': {
-        width: '20ch'
-      }
-    }
+        width: '20ch',
+      },
+    },
   },
   fab: {
     margin: theme.spacing.unit, // You might not need this now
     position: 'fixed',
     bottom: theme.spacing(2),
-    right: theme.spacing(2)
-  }
+    right: theme.spacing(2),
+  },
 }));
 
 function Home() {
@@ -76,6 +76,7 @@ function Home() {
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [refetch, setRefetch] = useState(false);
+  const [filter, setFilter] = useState('');
 
   return (
     <>
@@ -92,22 +93,23 @@ function Home() {
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
-                input: classes.inputInput
+                input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(e) => setFilter(e.target.value)}
             />
           </div>
         </Toolbar>
       </AppBar>
-      <MemesList refetch={refetch} />
+      <MemesList filter={filter} refetch={refetch} />
       <AddMemeDialog
         isOpen={isDialogOpen}
-        onDialogClose={refetch => {
+        onDialogClose={(refetch) => {
           setDialogOpen(false);
           setRefetch(refetch);
         }}
       />
-      <Fab className={classes.fab} color="secondary" aria-label="edit" onClick={e => setDialogOpen(true)}>
+      <Fab className={classes.fab} color="secondary" aria-label="edit" onClick={(e) => setDialogOpen(true)}>
         <AddIcon />
       </Fab>
     </>

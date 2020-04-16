@@ -1,19 +1,17 @@
 import React from 'react';
-import { ApolloProvider } from '@apollo/react-hooks';
+import {ApolloProvider} from '@apollo/react-hooks';
 import Home from './Home'
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { split } from 'apollo-link';
-import { HttpLink } from 'apollo-link-http';
-import { WebSocketLink } from 'apollo-link-ws';
-import { getMainDefinition } from 'apollo-utilities';
+import {ApolloClient} from 'apollo-client';
+import {InMemoryCache} from 'apollo-cache-inmemory';
+import {split} from 'apollo-link';
+import {HttpLink} from 'apollo-link-http';
+import {WebSocketLink} from 'apollo-link-ws';
+import {getMainDefinition} from 'apollo-utilities';
 
-// TODO: use effectively .env file
-const BUILD = "prod"
-const httpUrl = BUILD === "devel" ?
+const httpUrl = process.env.REACT_APP_BUILD === "devel" ?
     "http://localhost:4000/graphql" :
     "https://memebz.herokuapp.com/graphql"
-const webSocketUrl = BUILD === "devel" ?
+const webSocketUrl = process.env.REACT_APP_BUILD === "devel" ?
     "ws://localhost:4000/graphql" :
     "wss://memebz.herokuapp.com/graphql"
 

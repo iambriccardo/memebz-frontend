@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -6,6 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import MemesList from "./meme/memeslist/MemesList";
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import AddMemeDialog from "./meme/addmemedialog/AddMemeDialog";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,10 +63,19 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
+    fab: {
+        margin: theme.spacing.unit, // You might not need this now
+        position: "fixed",
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+    },
 }));
 
 function Home() {
     const classes = useStyles();
+
+    const [isDialogOpen, setDialogOpen] = useState(false);
+    const [refetch, setRefetch] = useState(false);
 
     return (
         <>
@@ -87,7 +99,14 @@ function Home() {
                     </div>
                 </Toolbar>
             </AppBar>
-            <MemesList/>
+            <MemesList refetch={refetch}/>
+            <AddMemeDialog isOpen={isDialogOpen} onDialogClose={(refetch) => {
+                setDialogOpen(false)
+                setRefetch(refetch)
+            }}/>
+            <Fab className={classes.fab} color="secondary" aria-label="edit" onClick={e => setDialogOpen(true)}>
+                <AddIcon />
+            </Fab>
         </>
     );
 }

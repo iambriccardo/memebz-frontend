@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import './MemeCard.css'
 import {makeStyles} from '@material-ui/core/styles';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -127,18 +126,22 @@ function MemesCard(props) {
                     className={classes.media}
                     image={meme.imageUrl}
                     title="Paella dish"
-                    onClick={e => setImageModalOpen(true)}
+                    onClick={() => {
+                        if (!isImageModalOpen) {
+                            setImageModalOpen(true)
+                        }
+                    }}
                 />
                 <CardContent>
                 </CardContent>
                 <CardActions disableSpacing>
                     <IconButton aria-label="up vote meme"
-                                onClick={e => upVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                                onClick={() => upVoteMeme({variables: {input: {memeId: meme.id}}})}>
                         {upVoting ? <CircularProgress/> : meme.upVotes}
                         <ArrowUpwardRoundedIcon/>
                     </IconButton>
                     <IconButton aria-label="down vote meme"
-                                onClick={e => downVoteMeme({variables: {input: {memeId: meme.id}}})}>
+                                onClick={() => downVoteMeme({variables: {input: {memeId: meme.id}}})}>
                         {downVoting ? <CircularProgress/> : meme.downVotes}
                         <ArrowDownwardRoundedIcon/>
                     </IconButton>

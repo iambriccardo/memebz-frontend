@@ -28,13 +28,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function MemesList() {
+function MemesList(props) {
     const classes = useStyles();
 
-    const {loading, error, data} = useQuery(GET_MEMES);
+    const {loading, error, data, refetch} = useQuery(GET_MEMES);
 
     if (loading) return 'Loading...';
     if (error) return `Error! ${error}`;
+
+    if (props.refetch) {
+        refetch()
+    }
 
     return (
         <Grid className={classes.root} container direction="row" justify="center" alignItems="center" spacing={2}>

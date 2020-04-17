@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/memebz-frontend/static/css/main.131bf407.chunk.css",
+    "main.js": "/memebz-frontend/static/js/main.ee53c4ea.chunk.js",
+    "main.js.map": "/memebz-frontend/static/js/main.ee53c4ea.chunk.js.map",
+    "runtime-main.js": "/memebz-frontend/static/js/runtime-main.a7c46e2e.js",
+    "runtime-main.js.map": "/memebz-frontend/static/js/runtime-main.a7c46e2e.js.map",
+    "static/css/2.a0e6fcfe.chunk.css": "/memebz-frontend/static/css/2.a0e6fcfe.chunk.css",
+    "static/js/2.e0cedb87.chunk.js": "/memebz-frontend/static/js/2.e0cedb87.chunk.js",
+    "static/js/2.e0cedb87.chunk.js.map": "/memebz-frontend/static/js/2.e0cedb87.chunk.js.map",
+    "index.html": "/memebz-frontend/index.html",
+    "precache-manifest.e079e0871b3683e6784a5e78f4962767.js": "/memebz-frontend/precache-manifest.e079e0871b3683e6784a5e78f4962767.js",
+    "service-worker.js": "/memebz-frontend/service-worker.js",
+    "static/css/2.a0e6fcfe.chunk.css.map": "/memebz-frontend/static/css/2.a0e6fcfe.chunk.css.map",
+    "static/css/main.131bf407.chunk.css.map": "/memebz-frontend/static/css/main.131bf407.chunk.css.map",
+    "static/js/2.e0cedb87.chunk.js.LICENSE.txt": "/memebz-frontend/static/js/2.e0cedb87.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/memebz-frontend/static/media/roboto-latin-900italic.ebf6d164.woff2"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a7c46e2e.js",
+    "static/css/2.a0e6fcfe.chunk.css",
+    "static/js/2.e0cedb87.chunk.js",
+    "static/css/main.131bf407.chunk.css",
+    "static/js/main.ee53c4ea.chunk.js"
+  ]
+}

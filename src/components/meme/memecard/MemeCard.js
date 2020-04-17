@@ -2,10 +2,8 @@ import { useMutation, useSubscription } from '@apollo/react-hooks';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { red } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
@@ -155,14 +153,10 @@ function MemesCard(props) {
             <ArrowDownwardRoundedIcon />
           </IconButton>
           <IconButton onClick={() => setCommentsModalOpen(!isCommentsModelOpen)} aria-label="show comments">
+            {meme.lastComments.length}
             <ChatRoundedIcon />
           </IconButton>
         </CardActions>
-        <CardContent>
-          {meme.lastComments.map((comment) => (
-            <Chip className={classes.commentChip} label={comment.content} variant="outlined" />
-          ))}
-        </CardContent>
       </Card>
       {isImageModalOpen && (
         <Lightbox
@@ -173,7 +167,7 @@ function MemesCard(props) {
           onClose={() => setImageModalOpen(false)}
         />
       )}
-      {isCommentsModelOpen && <MemeCommentsDialog memeId={meme.id} onDialogClose={() => setCommentsModalOpen(false)} />}
+      <MemeCommentsDialog isOpen={isCommentsModelOpen} meme={meme} onDialogClose={() => setCommentsModalOpen(false)} />
     </>
   );
 }

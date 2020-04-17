@@ -70,7 +70,7 @@ function MemeCommentsDialog(props) {
   const { loading } = useQuery(GET_COMMENTS, {
     variables: {
       input: {
-        memeId: props.memeId,
+        memeId: props.meme.id,
       },
     },
     onCompleted: (data) => {
@@ -81,7 +81,7 @@ function MemeCommentsDialog(props) {
   const [addComment] = useMutation(ADD_COMMENT);
 
   useSubscription(COMMENT_MADE, {
-    variables: { input: { memeId: props.memeId } },
+    variables: { input: { memeId: props.meme.id } },
     onSubscriptionData: ({
       subscriptionData: {
         data: { commentMade },
@@ -92,7 +92,7 @@ function MemeCommentsDialog(props) {
   });
 
   return (
-    <Dialog open={true} fullScreen={fullScreen} fullWidth={true}>
+    <Dialog open={props.isOpen} fullScreen={fullScreen} fullWidth={true}>
       <DialogTitle className={classes.dialogTitle} disableTypography>
         <Typography variant="h6">Comments</Typography>
         <IconButton color="inherit" aria-label="close" onClick={() => props.onDialogClose()}>
@@ -106,7 +106,7 @@ function MemeCommentsDialog(props) {
           ) : (
             <>
               {comments.map((comment) => (
-                <Grid item xs={12}>
+                <Grid item key={comment.id} xs={12}>
                   <Grid container direction="row" justify="space-between" alignItems="flex-end">
                     <Grid item>
                       <Chip label={comment.content} variant="outlined" />
@@ -129,13 +129,14 @@ function MemeCommentsDialog(props) {
           value={newCommentContent}
           variant="outlined"
           fullWidth
+          label={`Commment under ${props.meme.title}`}
           onChange={(e) => setNewCommentContent(e.target.value)}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
               addComment({
                 variables: {
                   input: {
-                    memeId: props.memeId,
+                    memeId: props.meme.id,
                     content: newCommentContent,
                   },
                 },

@@ -67,7 +67,7 @@ function MemeCommentsDialog(props) {
   const [comments, setComments] = useState([]);
   const [newCommentContent, setNewCommentContent] = useState('');
 
-  const { loading, error } = useQuery(GET_COMMENTS, {
+  const { loading } = useQuery(GET_COMMENTS, {
     variables: {
       input: {
         memeId: props.memeId,
@@ -78,7 +78,7 @@ function MemeCommentsDialog(props) {
     },
   });
 
-  const [addComment, { loading: addingComment }] = useMutation(ADD_COMMENT);
+  const [addComment] = useMutation(ADD_COMMENT);
 
   useSubscription(COMMENT_MADE, {
     variables: { input: { memeId: props.memeId } },

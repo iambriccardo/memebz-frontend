@@ -15,7 +15,7 @@ const GET_MEMES = gql`
       dateCreated
       upVotes
       downVotes
-      comments {
+      lastComments(last: 3) {
         content
       }
     }

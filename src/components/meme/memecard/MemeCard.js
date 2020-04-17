@@ -5,12 +5,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
+import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Collapse from '@material-ui/core/Collapse';
 import { red } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import ArrowDownwardRoundedIcon from '@material-ui/icons/ArrowDownwardRounded';
 import ArrowUpwardRoundedIcon from '@material-ui/icons/ArrowUpwardRounded';
 import ChatRoundedIcon from '@material-ui/icons/ChatRounded';
@@ -18,6 +17,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { Lightbox } from 'react-modal-image';
+import { fromNow } from '../../../util/date';
+import MemeCommentsDialog from '../memecommentsdialog/MemeCommentsDialog';
 
 const UP_VOTE_MEME = gql`
   mutation upVoteMeme($input: VoteInput!) {
@@ -74,13 +75,16 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: red[500],
   },
+  commentChip: {
+    margin: 8,
+  },
 }));
 
 function MemesCard(props) {
   const classes = useStyles();
 
   const [meme, setMeme] = useState(props.meme);
-  const [isExpanded, setExpand] = useState(false);
+  const [isCommentsModelOpen, setCommentsModalOpen] = useState(false);
   const [isImageModalOpen, setImageModalOpen] = useState(false);
 
   const [upVoteMeme, { loading: upVoting }] = useMutation(UP_VOTE_MEME);
@@ -123,8 +127,8 @@ function MemesCard(props) {
               <MoreVertIcon />
             </IconButton>
           }
-          title={meme.title + ' by ' + meme.author}
-          subheader={meme.dateCreated}
+          title={meme.author}
+          subheader={fromNow(meme.dateCreated)}
         />
         <CardMedia
           className={classes.media}
@@ -135,7 +139,6 @@ function MemesCard(props) {
             }
           }}
         />
-        <CardContent></CardContent>
         <CardActions disableSpacing>
           <IconButton
             aria-label="up vote meme"
@@ -151,17 +154,15 @@ function MemesCard(props) {
             {downVoting ? <CircularProgress /> : meme.downVotes}
             <ArrowDownwardRoundedIcon />
           </IconButton>
-          <IconButton onClick={() => setExpand(!isExpanded)} aria-label="show comments">
+          <IconButton onClick={() => setCommentsModalOpen(!isCommentsModelOpen)} aria-label="show comments">
             <ChatRoundedIcon />
           </IconButton>
         </CardActions>
-        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography variant="body1">
-              Comments are still under implementation, sorry for the inconvenience.
-            </Typography>
-          </CardContent>
-        </Collapse>
+        <CardContent>
+          {meme.lastComments.map((comment) => (
+            <Chip className={classes.commentChip} label={comment.content} variant="outlined" />
+          ))}
+        </CardContent>
       </Card>
       {isImageModalOpen && (
         <Lightbox
@@ -172,6 +173,7 @@ function MemesCard(props) {
           onClose={() => setImageModalOpen(false)}
         />
       )}
+      {isCommentsModelOpen && <MemeCommentsDialog memeId={meme.id} onDialogClose={() => setCommentsModalOpen(false)} />}
     </>
   );
 }
